@@ -12,7 +12,7 @@ class TimeAnalyser {
     public static final String BAT_PATH2 = "C:/Users/Григорий/IdeaProjects/TextAnalyzer/test2.bat";
     public static final String BAT_PATH3 = "C:/Users/Григорий/IdeaProjects/TextAnalyzer/test3.bat";
 
-    public static void main(String[] args) throws ParseException, IOException {
+    public static void main(String[] args) {
 
         HashMap<String, String> files = new HashMap<>();
         files.put(FILE_PATH1, BAT_PATH1);
@@ -22,7 +22,7 @@ class TimeAnalyser {
         for (Map.Entry entry : files.entrySet()) {
             String filePath = entry.getKey().toString();
             String lastLine = "";
-            long minutes;
+            long minutes = 0;
             long timeDifference;
 
             try {
@@ -38,15 +38,23 @@ class TimeAnalyser {
 
             long currentTime = new Date().getTime();
             SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-            Date updateTime = formatDate.parse(timeLastUpgrade);
-            timeDifference = currentTime - updateTime.getTime();
 
-            minutes = timeDifference / 60000;
+            try {
+                Date updateTime = formatDate.parse(timeLastUpgrade);
+                timeDifference = currentTime - updateTime.getTime();
+                minutes = timeDifference / 60000;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
             System.out.println(minutes);
 
             if (minutes > 240) {
-                new ProcessBuilder("cmd", "/c", "start", entry.getValue().toString()).start();
-                new ProcessBuilder();
+                try {
+                    new ProcessBuilder("cmd", "/c", "start", entry.getValue().toString()).start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             if (minutes > 300) {
